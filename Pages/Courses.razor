@@ -1,0 +1,138 @@
+@page "/courses"
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Courses</h3>
+
+<!-- Button to display the New Course Form -->
+<button class="btn btn-primary" @onclick="ShowNewCourseForm">Create New Course</button>
+
+@if (showNewCourseForm)
+{
+    <!-- New Course Form -->
+    <EditForm Model="newCourse" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label>Title</label>
+            <InputText class="form-control" @bind-Value="newCourse.Title" />
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <InputTextArea class="form-control" @bind-Value="newCourse.Description" />
+        </div>
+        <!-- Optionally, you can add a dropdown to select a teacher here -->
+        <button type="submit" class="btn btn-success">Create</button>
+        <button type="button" class="btn btn-secondary" @onclick="CancelNewCourse">Cancel</button>
+    </EditForm>
+}
+
+@if (courses == null)
+{
+    <p><em>Loading courses...</em></p>
+}
+else if (courses.Count == 0)
+{
+    <p>No courses available.</p>
+}
+else
+{
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courses)
+            {
+                <tr>
+                    <td>@course.Title</td>
+                    <td>@course.Description</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" @onclick="() => EditCourse(course.Id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteCourse(course.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    // This DTO can mirror your Course model for data transfer purposes.
+    public class CourseDto
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public int TeacherId { get; set; }
+        public User? Teacher { get; set; }
+    }
+
+    private List<CourseDto> courses = new();
+    private bool showNewCourseForm = false;
+    private CourseDto newCourse = new CourseDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCourses();
+    }
+
+    private async Task LoadCourses()
+    {
+        // Make sure your API endpoint returns JSON data.
+        courses = await Http.GetFromJsonAsync<List<CourseDto>>("api/courses") ?? new();
+    }
+
+    private void ShowNewCourseForm()
+    {
+        showNewCourseForm = true;
+    }
+
+    private void CancelNewCourse()
+    {
+        showNewCourseForm = false;
+        newCourse = new CourseDto();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("api/courses", newCourse);
+        if (response.IsSuccessStatusCode)
+        {
+            showNewCourseForm = false;
+            newCourse = new CourseDto();
+            await LoadCourses();
+        }
+        else
+        {
+            // Handle error appropriately (e.g., show a message)
+        }
+    }
+
+    private void EditCourse(int courseId)
+    {
+        // For editing, you can navigate to a separate Blazor page,
+        // e.g., /courses/edit/{courseId} that implements the edit form.
+        NavigationManager.NavigateTo($"/courses/edit/{courseId}");
+    }
+
+    private async Task DeleteCourse(int courseId)
+    {
+        var response = await Http.DeleteAsync($"api/courses/{courseId}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadCourses();
+        }
+        else
+        {
+            // Handle error appropriately.
+        }
+    }
+}

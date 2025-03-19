@@ -1,0 +1,135 @@
+@page "/enrollments"
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Enrollments</h3>
+
+<button class="btn btn-primary" @onclick="ShowNewEnrollmentForm">Create New Enrollment</button>
+
+@if (showNewEnrollmentForm)
+{
+    <EditForm Model="newEnrollment" OnValidSubmit="HandleValidEnrollmentSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label>Student Id</label>
+            <InputNumber class="form-control" @bind-Value="newEnrollment.StudentId" />
+        </div>
+        <div class="form-group">
+            <label>Course Id</label>
+            <InputNumber class="form-control" @bind-Value="newEnrollment.CourseId" />
+        </div>
+        <!-- Optionally, add a field for Grade -->
+        <button type="submit" class="btn btn-success">Create</button>
+        <button type="button" class="btn btn-secondary" @onclick="CancelNewEnrollment">Cancel</button>
+    </EditForm>
+}
+
+@if (enrollments == null)
+{
+    <p><em>Loading enrollments...</em></p>
+}
+else if (enrollments.Count == 0)
+{
+    <p>No enrollments available.</p>
+}
+else
+{
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Course Title</th>
+                <th>Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var enrollment in enrollments)
+            {
+                <tr>
+                    <td>@enrollment.StudentName</td>
+                    <td>@enrollment.CourseTitle</td>
+                    <td>@enrollment.Grade</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" @onclick="() => EditEnrollment(enrollment.Id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteEnrollment(enrollment.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public class EnrollmentDto
+    {
+        public int Id { get; set; }
+        public int StudentId { get; set; }
+        public int CourseId { get; set; }
+        public string? StudentName { get; set; }
+        public string? CourseTitle { get; set; }
+        public string? Grade { get; set; }
+    }
+
+    private List<EnrollmentDto> enrollments = new();
+    private bool showNewEnrollmentForm = false;
+    private EnrollmentDto newEnrollment = new EnrollmentDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEnrollments();
+    }
+
+    private async Task LoadEnrollments()
+    {
+        enrollments = await Http.GetFromJsonAsync<List<EnrollmentDto>>("api/enrollments") ?? new List<EnrollmentDto>();
+    }
+
+    private void ShowNewEnrollmentForm()
+    {
+        showNewEnrollmentForm = true;
+    }
+
+    private void CancelNewEnrollment()
+    {
+        showNewEnrollmentForm = false;
+        newEnrollment = new EnrollmentDto();
+    }
+
+    private async Task HandleValidEnrollmentSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("api/enrollments", newEnrollment);
+        if (response.IsSuccessStatusCode)
+        {
+            showNewEnrollmentForm = false;
+            newEnrollment = new EnrollmentDto();
+            await LoadEnrollments();
+        }
+        else
+        {
+            // Handle error appropriately
+        }
+    }
+
+    private void EditEnrollment(int enrollmentId)
+    {
+        NavigationManager.NavigateTo($"/enrollments/edit/{enrollmentId}");
+    }
+
+    private async Task DeleteEnrollment(int enrollmentId)
+    {
+        var response = await Http.DeleteAsync($"api/enrollments/{enrollmentId}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadEnrollments();
+        }
+        else
+        {
+            // Handle error appropriately
+        }
+    }
+}
