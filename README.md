@@ -3,7 +3,7 @@
 ## Course Registration System
 This is an end-to-end .NET project that implements MVC architectural pattern. It utilizes the Entity Framework for its model to integrate seamlessly with MySQL for querying and producing views on the front-end. The front-end is constructed using Blazor pages with some HTML/CSS/Javascript.
 
-The project allows users to register themselves as on of the following roles:
+The project allows users to register themselves as one of the following roles:
 - Admins
 - Teachers
 - Students
