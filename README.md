@@ -1,4 +1,4 @@
-#### (Note: This project has been developed using the assitance of AI tools and is updated periodically to reflect new features that are added)
+#### (Note: This project has been developed using the assistance of AI tools and is updated periodically to reflect new features that are added)
 
 ## Course Registration System
 This is an end-to-end .NET project that implements MVC architectural pattern. It utilizes the Entity Framework for its model to integrate seamlessly with MySQL for querying and producing views on the front-end. The front-end is constructed using Blazor pages with some HTML/CSS/Javascript.
