@@ -7,6 +7,7 @@ The project allows users to register themselves as on of the following roles:
 - Admins
 - Teachers
 - Students
+
 and allows them to access different features based on the role they use.
 
 ### Setting Up The Project:
