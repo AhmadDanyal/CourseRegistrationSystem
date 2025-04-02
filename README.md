@@ -1,17 +1,16 @@
-#### (Note: This project has been developed using the assistance of AI tools and is updated periodically to reflect new features that are added)
+#### (Note: This project has been developed with the assistance of AI tools and is updated periodically to reflect new features that are added)
 
 ## Course Registration System
-This is an end-to-end .NET project that implements MVC architectural pattern. It utilizes the Entity Framework for its model to integrate seamlessly with MySQL for querying and producing views on the front-end. The front-end is constructed using Blazor pages with some HTML/CSS/Javascript.
+This is an end-to-end .NET project that implements MVC architectural pattern. It utilizes the Entity Framework for its model to integrate seamlessly with MySQL for querying and producing views on the front-end. The front-end is constructed using Blazor pages with some HTML/CSS/Javascript. The purpose of this project is to demonstrate how .NET packages can be implemented end-to-end and also to onboard with "vibe coding", which allows AI to generate most of the boilerplate code, which can be transformed and debugged as necessary.
 
-The project allows users to register themselves as one of the following roles:
-- Admins
-- Teachers
-- Students
+The project allows users to register themselves as one of the following 3 roles:
+- Admin
+- Teacher
+- Student
 
-and allows them to access different features based on the role they use.
+and allows them to access different features based on the role they use. (Sign-On authentication and secure session tokens coming soon).
 
 ### Setting Up The Project:
-This is a Docker and Kubernetes intensive project. For this reason, it is highly recommended to use Docker Desktop as it integrates smoothly with Kubernetes. For API testing, Postman API has been preferred. The use of SQLServer is optional as it is used to verify existing data objects, but strictly speaking is not necessary. You do not need a server instance as the server used inside our cluster is deployed using Kubernetes. The links to download all of these are listed below:
-- [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Download Postman API](https://www.postman.com/downloads/)
-- [Download SQL Server Management Studio](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16) (optional)
+This code can be downloaded and unzipped into any IDE that will run .NET. Preferred IDEs are Visual Studio and VS Code. MySQL is served using a Docker container, so the knowledge of deploying docker images is assumed. For verifying database related tasks MySQL Workbench has been used, but any GUI that works with MySQL can be used.
+
+If users would like to learn how to use Docker, please see some of my other projects. Thank You!
